@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap");
-    // typeof document !== undefined ? require('bootstrap/dist/js/bootstrap') : null
   }, [])
 
   if (Component.getLayout) {

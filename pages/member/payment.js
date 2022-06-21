@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import Payment from '../../components/member/payment'
 
 export default function payment() {
   return (
-    <div>Payment Page</div>
+    <Fragment>
+        <Payment />
+    </Fragment>
   )
 }

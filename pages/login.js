@@ -10,7 +10,7 @@ export default function login() {
     )
 }
 
-Login.getLayout = function PageLayout(page) {
+login.getLayout = function PageLayout(page) {
     return (
         <Layout_login>
             {page}
