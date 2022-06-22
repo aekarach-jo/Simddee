@@ -1,28 +1,10 @@
-// import Link from 'next/link'
-import Link from 'next/link'
-import Router from 'next/router';
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
+import Index from '../components/index/Index';
 
-export default function Home({ admin }) {
-  const [men, setMen] = useState('men')
-  const [women, setWomen] = useState('women')
-
-  function setGender(gender) {
-    console.log(gender);
-    localStorage.setItem("gender", gender)
-    Router.push('/login')
-  }
-
+export default function Home() {
   return (
     <Fragment>
-      <div className="row">
-        <div className="col">
-          <button className='btn btn-info' onClick={() => setGender(men)}> ผู้ชาย</button>
-        </div>
-        <div className="col">
-          <button className='btn btn-warning' onClick={() => setGender(women)}> ผู้หญิง</button>
-        </div>
-      </div>
+      <Index />
     </Fragment>
   )
 }

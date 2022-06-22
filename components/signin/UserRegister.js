@@ -1,8 +1,9 @@
+import FormData from "form-data";
 import Link from "next/link";
 import Router from "next/router";
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import nextConfig from "../../next.config";
-import styles from "../../styles/signin/storeRegister.module.scss"
+import styles from "../../styles/storeRegister.module.scss"
 
 const apiUrl = nextConfig.apiPath;
 
@@ -10,26 +11,34 @@ export default function UserRegister() {
     const username = useRef()
     const password = useRef()
     const confirmPassword = useRef()
+    const packages = useRef()
+
+    useEffect(() => {
+        // if(packages){
+        //     console.log('ok');
+        // }
+    }, [packages])
+
 
     function handleRegis() {
         let formRegis = {
             username: username.current.value,
             password: password.current.value,
-            confirmPassword: confirmPassword.current.value,
+            // packages: packages.current.value,
         }
-        console.log(formRegis)
-        Router.push('/member/payment')
+        console.log(formRegis);
         // register(formRegis)
     }
 
-    const register = async (param) => {
+    const register = async (formRegis) => {
         const fetchRegis = await fetch(`${apiUrl}/store/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(param)
+            body: JSON.stringify(formRegis)
         })
+           Router.push('/member/payment')
     }
 
 
@@ -85,7 +94,7 @@ export default function UserRegister() {
                                     <input ref={password} type="password" className="form-control mt-1" placeholder="********" />
                                     <div className="col">
                                         <label>*ยืนยัน รหัสผ่าน
-                                        <p className="text-xs float-right m-1">(Confirm Password)</p>
+                                            <p className="text-xs float-right m-1">(Confirm Password)</p>
                                         </label>
                                         <label className="text-xs float-right mt-1 text-danger">(กรุณากรอกเป็นไอดีไลน์)</label>
                                     </div>
@@ -104,7 +113,7 @@ export default function UserRegister() {
                                 <div className="row flex justify-center">
                                     <p className="text-xl font-black px-5 ml-5">เลือกแพ็กเก็จ</p>
                                     <div className="col-3  m-2">
-                                        <button type="button" className="card px-2 hover:bg-gray-200" style={{ width: '10rem', height: '15rem' }}>
+                                        <button  type="button" className="card px-2 hover:bg-gray-200" style={{ width: '10rem', height: '15rem' }}>
                                             <img src="https://img.icons8.com/color/344/wedding-photo.png" className="card-img-top" alt="..." />
                                             <div className="card-body">
                                                 <p className="card-text text-sm">Member...</p>
@@ -112,7 +121,7 @@ export default function UserRegister() {
                                         </button>
                                     </div>
                                     <div className="col-3  m-2">
-                                        <button type="button" className="card px-2 hover:bg-gray-200" style={{ width: '10rem', height: '15rem' }}>
+                                        <button  type="button" className="card px-2 hover:bg-gray-200" style={{ width: '10rem', height: '15rem' }}>
                                             <img src="https://img.icons8.com/color/344/wedding-photo.png" className="card-img-top" alt="..." />
                                             <div className="card-body">
                                                 <p className="card-text text-sm">Premium...</p>

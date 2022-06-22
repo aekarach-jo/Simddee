@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Fragment } from 'react'
-import styles from '../../../styles/layouts/nav.module.scss'
+import styles from '../../../styles/nav.module.scss'
 
 export default function Nav() {
 

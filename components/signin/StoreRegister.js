@@ -1,11 +1,13 @@
 import Link from "next/link";
 import React, { Fragment, useRef } from "react";
 import nextConfig from "../../next.config";
-import styles from "../../styles/signin/storeRegister.module.scss"
+import FormData from "form-data";
+import styles from "../../styles/storeRegister.module.scss"
 
 const apiUrl = nextConfig.apiPath;
 
 export default function StoreRegister() {
+    let formData = new FormData()
     const storeName = useRef()
     const age = useRef()
     const image = useRef()
@@ -13,16 +15,17 @@ export default function StoreRegister() {
     const password = useRef()
     const confirmPassword = useRef()
 
+
     function handleRegis() {
-        let formRegis = {
-            storeName: storeName.current.value,
-            age: age.current.value,
-            image: image.current.files,
-            username: username.current.value,
-            password: password.current.value,
-            confirmPassword: confirmPassword.current.value,
+        formData.append('storeName', storeName.current.value)
+        formData.append('age', age.current.value)
+        formData.append('image', image.current.value)
+        formData.append('username', username.current.value)
+        formData.append('password', password.current.value)
+
+        for (var item of formData.entries()) {
+            console.log(item[0]+ ', ' + item[1]); 
         }
-        console.log(formRegis)
         // register(formRegis)
     }
 
