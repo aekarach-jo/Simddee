@@ -26,12 +26,13 @@ export default function UserRegister() {
             password: password.current.value,
             // packages: packages.current.value,
         }
+        Router.push('/member/payment')
         console.log(formRegis);
         // register(formRegis)
     }
 
     const register = async (formRegis) => {
-        const fetchRegis = await fetch(`${apiUrl}/store/register`, {
+        const fetchRegis = await fetch(`${apiUrl}/member/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
