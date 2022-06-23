@@ -1,33 +1,58 @@
 import Link from "next/link";
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import nextConfig from "../../next.config";
 import FormData from "form-data";
-import styles from "../../styles/storeRegister.module.scss"
+import Head from "next/head";
+import Swal from "sweetalert2";
 
 const apiUrl = nextConfig.apiPath;
 
 export default function StoreRegister() {
     let formData = new FormData()
-    const storeName = useRef()
-    const age = useRef()
-    const image = useRef()
-    const username = useRef()
-    const password = useRef()
-    const confirmPassword = useRef()
+    const [image, setImage] = useState(null)
+    const inputImage = useRef(null)
+
+    const [storeName, setStorename] = useState("")
+    const [age, setAge] = useState("")
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [isRegister, setIsRegister] = useState(false)
+
+    function inputIamgeOnchange(e) {
+        const URLs = URL.createObjectURL(e.target.files[0]);
+        setImage(URLs)
+    }
 
 
     function handleRegis() {
-        formData.append('storeName', storeName.current.value)
-        formData.append('age', age.current.value)
-        formData.append('image', image.current.value)
-        formData.append('username', username.current.value)
-        formData.append('password', password.current.value)
+        formData.append('storeName', storeName)
+        formData.append('age', age)
+        formData.append('image', image)
+        formData.append('username', username)
+        formData.append('password', password)
 
-        for (var item of formData.entries()) {
-            console.log(item[0]+ ', ' + item[1]); 
+        if (storeName == "" || age == "" || image == "" || username == "" || password == "") {
+            Swal.fire({
+                icon: 'warning',
+                position: 'center',
+                title: 'กรุณากรอกข้อมูลให้ครบ',
+            })
+            return false;
         }
+        if (password != confirmPassword) {
+            Swal.fire({
+                icon: 'warning',
+                position: 'center',
+                title: 'รหัสผ่านไม่ตรงกัน',
+            })
+            return false;
+        }
+
         // register(formRegis)
     }
+
+
 
     const register = async (param) => {
         const fetchRegis = await fetch(`${apiUrl}/store/register`, {
@@ -42,112 +67,166 @@ export default function StoreRegister() {
 
     return (
         <Fragment>
-            <div className="container bg-white flex flex-col space-y-10 justify-center items-center mt-4">
-                <div className="row">
-                    <div className="col ">
-                        <iframe className="float-right" width="480" height="255" src="https://www.youtube.com/embed/ZhDNtEe0kGM"
-                            title="​Ed Sheeran, Dua Lipa, Kygo, Avicii, Martin Garrix, The Chainsmokers Style - Feeling Me"
-                            frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen>
-                        </iframe>
+            <Head>
+                <link rel="stylesheet" href="/assets/css/global.min.css" />
+                <link rel="stylesheet" href="/assets/css/apply-stone.min.css" />
+            </Head>
+            <div>
+                <header>
+                    <div className="column-left">
+                        <Link href='/'>
+                            <img style={{ cursor: 'pointer' }} src="/assets/images/logo-fillfin.png" alt />
+                        </Link>
                     </div>
-                    <div className="col">
-                        <div className="space-y-4 text-black-500 bg-pink-200 rounded-lg border w-full max-w-xl h-64 p-6 overflow-y-scroll scrollbar">
-                            <p className="text-center text-xl m-0 font-black">ข้อกำหนดการสมัครร้านค้า</p>
-                            <p className="text-center text-lg m-0">(ดู VDO ประกอบ)</p>
-                            <p className="indent-7 p-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <div className="space-y-4">
-                                <div className="h-24 bg-gray-100" />
-                                <div className="h-24 bg-gray-100" />
-                                <div className="h-24 bg-gray-100" />
-                                <div className="h-24 bg-gray-100" />
-                                <div className="h-24 bg-gray-100" />
-                                <div className="h-24 bg-gray-100" />
+                    <div className="column-right">
+                        <Link href='/login'>
+                            <button className="btn-login">เข้าสู่ระบบ</button>
+                        </Link>
+                        <Link href='/store/register'>
+                            <button className="btn-apply">สมัครร้านค้า</button>
+                        </Link>
+                        <button className="btn"><i className="fa-solid fa-cart-shopping" /></button>
+                        <button className="btn"><i className="fa-solid fa-bars" /></button>
+                    </div>
+                </header>
+                <div className="apply">
+                    <div className="contact-us">
+                        <div className="column-contact-us">
+                            <div className="text-contact-us">
+                                <p>ติดต่อเรา</p>
                             </div>
+                            <div className="img-contact-us">
+                                <img src="/assets/images/contact.jpg" alt />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="column-apply">
+                        <div className="column-top-apply">
+                            <div className="column-left">
+                                <iframe width={536} height={300} src="https://www.youtube.com/embed/CUfPYWtydgk" title="YouTube video player" frameBorder={0} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                            </div>
+                            <div className="column-right">
+                                <h2>ข้อกำหนดการสมัครสมาชิก</h2>
+                                <h3>(ดู VDO ประกอบ)</h3>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.</p>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.
+                                </p><p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.
+                                </p><p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde fuga nulla accusantium eum quis facilis commodi maxime rerum iste itaque repellendus consequatur, error assumenda quo nisi ipsa suscipit consectetur quia.</p>
+                            </div>
+                        </div>
+                        <div className="column-center-apply">
+                            <div className="column-left">
+                                <h2>กรอกข้อมูลสมัครร้านค้า</h2>
+                                <div className="column">
+                                    <div className="left">
+                                        <div className="box-column-login">
+                                            <div className="form-user-login">
+                                                <div className="form">
+                                                    <div className="label-top">
+                                                        <div className="text-left">*ชื่อร้านค้า</div>
+                                                        <div className="text-right">(กรุณากรอกเป็นภาษาอังกฤษและตัวเลขเท่านั้น)</div>
+                                                    </div>
+                                                    <input onChange={(e) => setStorename(e.target.value)} type="text" id placeholder="User Name" />
+                                                </div>
+                                                <div className="form">
+                                                    <div className="label-top">
+                                                        <div className="text-left">*รหัสผ่าน <p>(Password)</p></div>
+                                                        <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
+                                                    </div>
+                                                    <input onChange={(e) => setPassword(e.target.value)} type="password" id placeholder="************" />
+                                                </div>
+                                                <div className="form">
+                                                    <div className="label-top">
+                                                        <div className="text-left">*ยืนยัน รหัสผ่าน<p>(Confirm Password)</p></div>
+                                                        <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
+                                                    </div>
+                                                    <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id placeholder="************" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-check">
+                                            <input onClick={() => setIsRegister(true)} className="form-check-input" type="checkbox" id="flexCheckChecked" />
+                                            <label className="form-check-label" htmlFor="flexCheckChecked">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna felis id nulla eget. Sed donec faucibus enim in
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="right">
+                                        <div className="box-column-login">
+                                            <div className="form-user-login">
+                                                <div className="form">
+                                                    <div className="label-top">
+                                                        <div className="text-left">*ชื่อผู้ใช้ <p>(User)</p></div>
+                                                        <div className="text-right">(กรุณากรอกเป็นเบอร์โทรศัพท์)</div>
+                                                    </div>
+                                                    <input onChange={(e) => setUsername(e.target.value)} type="text" id placeholder="Lorem ipsum dolor sit amet, consectetur" />
+                                                </div>
+                                                <div className="form">
+                                                    <div className="label-top">
+                                                        <div className="text-left">*อายุ</div>
+                                                    </div>
+                                                    <input onChange={(e) => setPassword(e.target.value)} type="password" id placeholder="Lorem ipsum dolor sit amet, consectetur" />
+                                                </div>
+                                                <div className="column-upload-img">
+                                                    <div className="column-left">
+                                                        {
+                                                            image
+                                                                ? <img src={image} alt="" />
+                                                                : <i className="fa-solid fa-image" />
+                                                        }
+                                                        <input style={{ display: "none" }} type="file" ref={inputImage} onChange={(e) => inputIamgeOnchange(e)} />
+                                                    </div>
+                                                    <div className="column-right">
+                                                        <h3>อัฟโหลดภาพโปรไฟล์ร้าน</h3>
+                                                        <p>ขนาดอัฟโหลดไฟล์ภาพ ไม่เกิน 2 Gb</p>
+                                                        <button className="btn-upload" onClick={(e) => inputImage.current.click()}>อัฟโหลด</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="column-qr-right">
+                                <div className="left">
+                                    <h3>ติดต่อ Admin
+                                        เพื่ออัฟโหลด
+                                        Clip VDO</h3>
+                                    <p>Line ID : line 1</p>
+                                </div>
+                                <div className="right">
+                                    <img src="/assets/images/qr.png" alt />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="line">
+                        </div>
+                        <div className="btn-column">
+                            {
+                                isRegister ?
+                                    <button onClick={() => handleRegis()} className="btn-left">สมัครสมาชิก</button>
+                                    : <button className="btn-left" style={{ backgroundColor: '#e3e3e3', cursor: "not-allowed" }}>สมัครสมาชิก</button>
+                            }
+                            <button className="btn-right">ยกเลิก</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className=" bg-white flex flex-col space-y-10 justify-center items-center overflow-hidden">
-                <form className="px-5">
-                    <div className="row px-5 mt-5">
-                        <h3 className="text-center">กรอกข้อมูลผู้สมัคร</h3>
-                        <div className="col">
-                            <div className="bg-white h-36 w-120 rounded">
-                                <div className="space-y-5 mt-5">
-                                    <div className="col">
-                                        <label>*ชื่อผู้ใช้ </label>
-                                        <label className="text-xs float-right mt-1 text-danger">(กรุณากรอกเป็นภาษาอังกฤษและตัวเลขเท่านั้น)</label>
-                                    </div>
-                                    <input ref={storeName} type="text" className="form-control border border-gray-800 rounded px-3 mt-1" placeholder="storename" />
-                                    <div className="col">
-                                        <label>*รหัสผ่าน</label>
-                                        <label className="text-xs float-right mt-1 text-danger">(กรุณากรอกเป็นไอดีไลน์)</label>
-                                    </div>
-                                    <input ref={password} type="password" className="form-control mt-1" placeholder="********" />
-                                    <div className="col">
-                                        <label>*ยืนยัน รหัสผ่าน</label>
-                                        <label className="text-xs float-right mt-1 text-danger">(กรุณากรอกเป็นไอดีไลน์)</label>
-                                    </div>
-                                    <input ref={confirmPassword} type="password" className="form-control mt-1" placeholder="********" />
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" defaultValue id="checkSubmit" defaultChecked />
-                                        <label className="form-check-label text-sm" htmlFor="checkSubmit">
-                                            ยืนยันการสมัคร
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
+                <footer>
+                    <div className="footer-column">
+                        <div className="column-left">
+                            © 2022 Fillfin.com All Rights Reserved
                         </div>
-                        <div className="col">
-                            <div className="bg-white h-45 w-120 rounded">
-                                <div className="space-y-5 mt-5">
-                                    <div className="col">
-                                        <label >*ชื่อผู้ใช้</label>
-                                        <label className="text-xs float-right mt-1 text-danger">(กรุณากรอกเป็นเบอร์โทรศัพท์)</label>
-                                    </div>
-                                    <input ref={username} type="text" className="form-control border border-gray-800 rounded px-3 mt-1" placeholder="username" />
-                                    <label >*อายุ</label>
-                                    <input ref={age} type="text" className="form-control border border-gray-800 rounded px-3 mt-1" placeholder="age" />
-                                    <div className="row">
-                                        <div className="col-5 border border-gray-300 rounded pt-4 ml-3">
-                                            <img className="flex flex-col m-auto z-10" src="https://img.icons8.com/material-outlined/100/image.png" alt="" width={40} height={40} />
-                                            <input type="file" ref={image} className="opacity-0 w-36 z-0" />
-                                        </div>
-                                        <div className="col-6 ">
-                                            <label className="text-md">อัฟโหลดภาพโปรไฟล์ร้าน</label>
-                                            <label className="text-xs">ขนาดอัฟโหลดไฟล์ภาพ ไม่เกิน 2 Mb</label>
-                                            <button type="button" className={`${styles.btn_color} rounded-pill w-36 m-2`}>อัฟโหลด</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col content-around grid">
-                            <div className="row bg-gray-300 h-52 w-96 content-around gri rounded">
-                                <div className="col">
-                                    <h5 className="space-y-5 p-3">ติดต่อ Admin เพื่ออัฟโหลด Clip VDO</h5>
-                                </div>
-                                <div className="col">
-                                    <img src="https://img.icons8.com/officel/100/qr-code.png" alt="" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <hr className="m-4" />
-                        <div className="row mt-3">
-                            <div className="col">
-                                <button type="button" onClick={handleRegis} className={`${styles.btn_color} rounded btn float-right border`}>สมัครร้านค้า</button>
-                            </div>
-                            <div className="col">
-                                <Link href='/login'>
-                                    <button className="btn btn-secondary float-left">ยกเลิก</button>
-                                </Link>
-                            </div>
+                        <div className="column-right">
+                            <p>Terms of Service</p>
+                            <p>Privacy Policy</p>
                         </div>
                     </div>
-                </form>
+                </footer>
             </div>
+
         </Fragment>
     );
 }

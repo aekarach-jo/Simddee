@@ -8,7 +8,7 @@ export default function Index() {
     const [women, setWomen] = useState('women')
 
     useEffect(() => {
-        // getBanner()
+        
     }, [])
 
     function setGender(gender) {
@@ -89,11 +89,11 @@ export default function Index() {
                 </div>
             </div>
             <footer>
-                <div class="footer-column">
-                    <div class="column-left">
+                <div className="footer-column">
+                    <div className="column-left">
                         © 2022 Fillfin.com All Rights Reserved
                     </div>
-                    <div class="column-right">
+                    <div className="column-right">
                         <p>Terms of Service</p>
                         <p>Privacy Policy</p>
                     </div>

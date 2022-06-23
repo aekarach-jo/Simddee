@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import Head from 'next/head'
+import Script from 'next/script'
 
 export default function Layout_main({ children }) {
   return (
@@ -15,15 +16,14 @@ export default function Layout_main({ children }) {
           <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500&display=swap" rel="stylesheet" />
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
           <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-          <link rel="stylesheet" href="/assets/css/global.min.css" />
-          <link rel="stylesheet" href="/assets/css/index.min.css" />
         </div>
       </Head>
       <main>
         {children}
-        <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-        <script src="/assets/js/index.js"></script>
       </main>
+      <Script
+        src="https://unpkg.com/swiper@8/swiper-bundle.min.js"
+      ></Script>
     </Fragment>
   )
 }

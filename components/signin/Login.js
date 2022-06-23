@@ -1,33 +1,78 @@
-import { data } from 'autoprefixer';
-import { setCookies } from 'cookies-next';
-import Router from 'next/router';
-import React, { Fragment, useState } from 'react'
+import Head from 'next/head';
+import Link from 'next/link';
+import React, { Fragment, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
-import apiSigninService from './apiSigninService';
-
-const apiService = apiSigninService
 
 export default function Login() {
-  const [pathLogin, setPathLogin] = useState()
-  const [username, setUsername] = useState()
-  const [password, setPassword] = useState()
+  const [pathLogin, setPathLogin] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [showForm, setShowForm] = useState('member')
 
-  function onSignin() {
-    let formLogin = {
-      username: username.current.value,
-      password: password.current.value,
+  useEffect(() => {
+    if (showForm) {
+      setPathLogin(showForm == "member" ? "member" : "store")
     }
-    console.log(formLogin);
-    console.log(pathLogin);
-    // userLogin(formLogin);
+  }, [showForm])
+
+  function onSigninClick() {
+    if (username == "" || password == "") {
+      Swal.fire({
+        icon: 'warning',
+        position: 'center',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+      })
+      return false;
+    }
+
+    let formLogin = { username, password }
+    // login(formLogin,pathLogin);
   }
 
-  const userLogin = async (params) => {
-    const onLogin = apiService.login(params)
+  async function login(formLogin, pathLogin) {
+    try {
+      const onLogin = await fetch(`${apiUrl}/${pathLogin}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formLogin)
+      })
+      const data = onLogin.json()
+      if (data.status) {
+        setCookies('access_token', data.access_token)
+        setCookies('refresh_token', data.refresh_token)
+        await Swal.fire({
+          title: response.description,
+          icon: 'success',
+          timer: 1000,
+          showCancelButton: false,
+          showConfirmButton: false
+        })
+        Router.push('/')
+      } else {
+        Swal.fire({
+          title: response.description,
+          icon: 'error',
+          timer: 1000,
+          showCancelButton: false,
+          showConfirmButton: false
+        })
+      }
+    }
+    catch (err) {
+
+    }
+
   }
 
   return (
     <Fragment>
+      <Head>
+        <title>Login</title>
+        <link rel="stylesheet" href="/assets/css/global.min.css" />
+        <link rel="stylesheet" href="/assets/css/login.min.css" />
+      </Head>
       <div>
         <header>
           <div className="column-left">
@@ -67,49 +112,71 @@ export default function Login() {
               <h2>เข้าสู่ระบบ</h2>
               <div className="box-column-login">
                 <div className="menu-navbar" id="menu-navbar">
-                  <button onClick={() => setPathLogin('userLogin')} className="btn-navbar active" onclick="showForm('user')">สำหรับผู้ซื้อสินค้า</button>
-                  <button onClick={() => setPathLogin('womenLogin')} className="btn-navbar" onclick="showForm('admin')">สำหรับร้านค้า</button>
+                  {showForm == 'member'
+                    ?
+                    <>
+                      <button className="btn-navbar active" onClick={() => setShowForm('member')}>สำหรับผู้ซื้อสินค้า</button>
+                      <button className="btn-navbar " onClick={() => setShowForm('store')}>สำหรับร้านค้า</button>
+                    </>
+                    :
+                    <>
+                      <button className="btn-navbar " onClick={() => setShowForm('member')}>สำหรับผู้ซื้อสินค้า</button>
+                      <button className="btn-navbar active" onClick={() => setShowForm('store')}>สำหรับร้านค้า</button>
+                    </>
+                  }
                 </div>
-                <div className="form-user-login active" id="user">
-                  <div className="form">
-                    <div className="label-top">
-                      <div className="text-left">ชื่อผู้ใช้ <p>(User)</p></div>
-                      <div className="text-right">(กรุณากรอกเป็นเบอร์โทรศัพท์)</div>
+                {
+                  showForm == 'member' ?
+                    <div className="form-user-login active" id="user">
+                      <div className="form">
+                        <div className="label-top">
+                          <div className="text-left">ชื่อผู้ใช้ <p>(User)</p></div>
+                          <div className="text-right">(กรุณากรอกเป็นเบอร์โทรศัพท์)</div>
+                        </div>
+                        <input onChange={(e) => setUsername(e.target.value)} type="text" id placeholder="User Name" />
+                      </div>
+                      <div className="form">
+                        <div className="label-top">
+                          <div className="text-left">รหัสผ่าน <p>(Password)</p></div>
+                          <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
+                        </div>
+                        <input onChange={(e) => setPassword(e.target.value)} type="password" id placeholder="User Name" />
+                        <a className="text-bottom">ลืมชื่อผู้ใช้ หรือ รหัสผ่าน</a>
+                      </div>
+                    </div> :
+                    <div className="form-admin-login active" id="admin">
+                      <div className="form">
+                        <div className="label-top">
+                          <div className="text-left">ชื่อผู้ใช้ <p>(User)</p></div>
+                          <div className="text-right">(กรุณากรอกเป็นเบอร์โทรศัพท์)</div>
+                        </div>
+                        <input type="text" id placeholder="User Name" />
+                      </div>
+                      <div className="form">
+                        <div className="label-top">
+                          <div className="text-left">รหัสผ่าน <p>(Password)</p></div>
+                          <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
+                        </div>
+                        <input type="password" id placeholder="User Name" />
+                        <a className="text-bottom">ลืมชื่อผู้ใช้ หรือ รหัสผ่าน</a>
+                      </div>
                     </div>
-                    <input onChange={(e) => setUsername(e.target.value)} type="text" id placeholder="User Name" />
-                  </div>
-                  <div className="form">
-                    <div className="label-top">
-                      <div className="text-left">รหัสผ่าน <p>(Password)</p></div>
-                      <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
-                    </div>
-                    <input onChange={(e) => setPassword(e.target.value)} type="password" id placeholder="User Name" />
-                    <a className="text-bottom">ลืมชื่อผู้ใช้ หรือ รหัสผ่าน</a>
-                  </div>
-                </div>
-                <div className="form-admin-login" id="admin">
-                  <div className="form">
-                    <div className="label-top">
-                      <div className="text-left">ชื่อผู้ใช้ <p>(User)</p></div>
-                      <div className="text-right">(กรุณากรอกเป็นเบอร์โทรศัพท์)</div>
-                    </div>
-                    <input type="text" id placeholder="User Name" />
-                  </div>
-                  <div className="form">
-                    <div className="label-top">
-                      <div className="text-left">รหัสผ่าน <p>(Password)</p></div>
-                      <div className="text-right">(กรุณากรอกเป็นไอดีไลน์)</div>
-                    </div>
-                    <input type="password" id placeholder="User Name" />
-                    <a className="text-bottom">ลืมชื่อผู้ใช้ หรือ รหัสผ่าน</a>
-                  </div>
-                </div>
-                <button onClick={() => onSignin()} className="btn-login">เข้าระบบ</button>
+                }
+                <button onClick={() => onSigninClick()} className="btn-login">เข้าระบบ</button>
               </div>
             </div>
             <h2>หรือ</h2>
             <p>หากคุณยังไม่มีบัญชีผู้ใช้ สามารถเข้าไปสมัครได้ที่ด้านล้างนี้เลย</p>
-            <button className="btn-menbar">สมัครสมาชิก</button>
+            {showForm == 'member'
+              ?
+              <Link href='/member/register'>
+                <button className="btn-menbar" >สมัครสมาชิก</button>
+              </Link>
+              :
+              <Link href='/store/register'>
+                <button className="btn-menbar" >สมัครร้านค้า</button>
+              </Link>
+            }
           </div>
         </div>
         <footer>
@@ -124,9 +191,6 @@ export default function Login() {
           </div>
         </footer>
       </div>
-      {/* <script src="/assets/js/login.js"></script> */}
-
-
     </Fragment>
   )
 }

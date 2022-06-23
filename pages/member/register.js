@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import Layout_register from '../../components/layouts/Layout_register'
-import UserRegister from '../../components/signin/UserRegister'
+import MemberRegister from '../../components/signin/memberRegister'
 export default function register() {
   return (
     <Fragment>
-      <UserRegister />
+      <MemberRegister />
     </Fragment>
   )
 }
