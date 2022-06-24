@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import Router from "next/router";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import nextConfig from "../../next.config";
@@ -19,7 +20,6 @@ export default function MemberRegister() {
 
 
     function handleRegis() {
-        console.log(username, password, confirmPassword)
         if (username == "" || password == "" || confirmPassword == "") {
             Swal.fire({
                 icon: 'warning',
@@ -46,7 +46,12 @@ export default function MemberRegister() {
             return false;
         }
 
-        console.log('pass')
+        const formRegis = {
+            username: username,
+            password: password,
+            packages: packages,
+        }
+        reguster(formRegis);
     }
 
     const register = async (formRegis) => {
@@ -59,10 +64,18 @@ export default function MemberRegister() {
                 body: JSON.stringify(formRegis)
             })
             const resJson = fetchRegis.json()
-            if (resJson.status) {
-
+            if (resJson.status == "ok") {
+                Swal.fire({
+                    icon: "success",
+                    title: "บันทึกเรียบร้อย",
+                    position: "center",
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then( res => {
+                    localStorage.setItem('memberId', resJson.data.memberId) // เก็บ id ไว้ดึงข้อมูลในหน้า payment
+                })
             } else {
-                // alert
+                // alert error
             }
         }
         catch (err) {
@@ -72,8 +85,22 @@ export default function MemberRegister() {
         // Router.push('/member/payment')
     }
 
-
-
+    function onClickCancel() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'ยกเลิกการสมัครหรือไม่',
+            position: 'center',
+            showCancelButton: true,
+            cancelButtonText: 'ยกเลิก',
+            showConfirmButton: true,
+            confirmButtonText: 'ยืนยัน'
+        })
+            .then(res => {
+                if (res.isConfirmed) {
+                    Router.push('/login')
+                }
+            })
+    }
 
     return (
         <Fragment>
@@ -84,13 +111,9 @@ export default function MemberRegister() {
             <div>
                 <header>
                     <div className="column-left">
-                        <img src="/assets/images/logo-fillfin.png" alt />
-                    </div>
-                    <div className="column-right">
                         <Link href='/'>
                             <img style={{ cursor: 'pointer' }} src="/assets/images/logo-fillfin.png" alt />
-                        </Link>
-                    </div>
+                        </Link>                    </div>
                     <div className="column-right">
                         <Link href='/login'>
                             <button className="btn-login">เข้าสู่ระบบ</button>
@@ -147,7 +170,7 @@ export default function MemberRegister() {
                         <div className="column-center-apply">
                             <div className="column-left">
                                 <div className="column-text-login">
-                                    <h2>เข้าสู่ระบบ</h2>
+                                    <h2>กรอกข้อมูลผู้สมัคร</h2>
                                     <div className="box-column-login">
                                         <div className="form-user-login">
                                             <div className="form">
@@ -217,7 +240,7 @@ export default function MemberRegister() {
                                     <button onClick={() => handleRegis()} className="btn-left">สมัครสมาชิก</button>
                                     : <button className="btn-left" style={{ backgroundColor: '#e3e3e3', cursor: "not-allowed" }}>สมัครสมาชิก</button>
                             }
-                            <button className="btn-right">ยกเลิก</button>
+                            <button onClick={() => onClickCancel()} className="btn-right">ยกเลิก</button>
                         </div>
                     </div>
                 </div>

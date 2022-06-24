@@ -1,69 +1,310 @@
-import React, { useRef } from 'react'
-import styles from '../../styles/payment.module.scss'
+import Head from "next/head";
+import Link from "next/link";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import nextConfig from "../../next.config";
+import FormData from "form-data";
+import Swal from "sweetalert2";
 
+const apiUrl = nextConfig.apiPath;
 
 export default function Payment() {
+    let formData = new FormData();
+    const inputImage = useRef(null);
+    const [image, setImage] = useState(null);
 
-    const paymentImage = useRef()
+    const [bankList, setBankList] = useState([]);
+    const [bank, setBank] = useState("")
 
-    function handlePayment() {
-        let formPayment = {
-            paymentImage: paymentImage.current.files
+    const [isLoadSuccess, setIsLoadSuccess] = useState(false);
+
+    const [memberData, setMemberData] = useState([])
+    const [packageData, setpackageData] = useState([])
+    const [toggleShowPass, setSoggleShowPass] = useState(true)
+    useEffect(() => {
+        getPay()
+    }, [])
+
+
+    function handleSendClick() {
+        formData.append('image', image)
+
+        if (bank == "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรุณาเลือกบัญชี',
+
+            })
+            return false;
         }
-        console.log(formPayment)
-        payment(formPayment)
+        if (!image) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรุณาอัฟโหลดสลิป',
+
+            })
+            return false;
+        }
+
+        console.log('success');
+        // payment(formPayment)
     }
 
-    const payment = async (param) => {
-        const pay = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+    function inputImageOnChange(e) {
+        if (["image/jpeg", "iamge/jpg", "image/png"].includes(e.target.files[0].type)) {
+            const URLs = URL.createObjectURL(e.target.files[0])
+            setImage(URLs)
+        } else {
+            Swal.fire({
+                title: 'กรุณาอัฟโหลดเฉพาะไฟล์รูปภาพ',
+                icon: 'warning',
+                position: "center",
+            })
+        }
+    }
+
+    const getPay = async () => {
+        // const payData = await fetch(`${apiUrl}/getPay`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
+        // const data = payData.json()
+        const formTest = [
+            {
+                id: '1',
+                names: 'SCB Siam Commercial Bank / 0000000000 / Mr.Fillfin Thailand'
             },
-            body: JSON.stringify(param)
-        })
-    }
-    return (
-        <div>
-            <div className="container justify-center items-center">
-                <div className="col">
-                    <p className="text-center text-lg font-black">รายละเอียดการชำระค่าสมาชิก</p>
-                    <div className="card">
-                        <div className="col">
-                            <div className="row text-center">รายละเอียดแพ็กเก็จ</div>
-                            <div className="row">แพ็กเก็จ</div>
-                            <div className="row">รวมทั้งหมดๆ </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col w-96">
-                    <p className="text-center text-lg font-black">ข้อมูลผู้สมัคร</p>
-                    <div className="card">2</div>
-                </div>
-                <div className="col w-96">
-                    <p className="text-center text-lg font-black">ชำระค่าสมัครสมาชิก</p>
-                    <div className="card">
-                        <div className="row">
-                            <p className="text-xs">*บัญชีของทางเว็ปไซต์</p>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>-------------------------</option>
-                                <option value="1">One</option>
-                            </select>
-                            <div className="col-5 border border-gray-300 rounded pt-4 ml-3">
-                                <img className="flex flex-col m-auto z-10" src="https://img.icons8.com/material-outlined/100/image.png" alt="" width={40} height={40} />
-                                <input type="file" className="opacity-0 w-36 z-0" />
-                            </div>
-                            <div className="col-6 ">
-                                <label className="text-md">อัฟโหลดภาพโปรไฟล์ร้าน</label>
-                                <label className="text-xs">ขนาดอัฟโหลดไฟล์ภาพ ไม่เกิน 2 Mb</label>
-                                <button type="button" className={`${styles.btn_send} rounded-pill w-36 m-2 text-white`}>อัฟโหลด</button>
-                            </div>
-                        </div>
-                    </div>
-                    <button className={`${styles.btn_send} btn w-full text-white`}>ส่ง</button>
-                </div>
-            </div>
-        </div>
-    )
-}
+            {
+                id: '2',
+                names: 'KTB Siam Commercial Bank / 0000000000 / Mr.Fillfin Thailand'
+            }
+        ]
+        setBankList(formTest);
 
+        getMemberId()
+        setTimeout(() => setIsLoadSuccess(true), 2000)
+    }
+
+    const getMemberId = async () => {
+        const formMember = [
+            {
+                id: 1,
+                username: 'นายสมหมาย',
+                password: 'lnwza007',
+                package: 1
+            }]
+        setMemberData(formMember)
+        getPackagetId(1)
+        // try {
+        //     const id = localStorage.getItem("memberId")
+        //     const memberId = await fetch(`${apiUrl}/getMemberById`, {
+        //         method: "GET",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     })
+        //     const data = memberId.json()
+
+        // } catch (err) { };
+    };
+
+    const getPackagetId = async (id) => {
+        const formPackage = [{
+            id: 1,
+            packageType: 'premium',
+            packageDetail: 365,
+            price: 1500,
+            totalPrice: 1500
+        }]
+        setpackageData(formPackage)
+
+        // try {
+        //     const detail = await fetch(`${apiUrl}/package`, {
+        //         method: "GET",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     const data = detail.json();
+        // } catch (err) { }
+    };
+
+    const createPayment = async (param) => {
+        try {
+            const pay = await fetch(`${apiUrl}/payment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(param),
+            });
+        } catch (err) { }
+    }
+
+    return (
+        <Fragment>
+            <Head>
+                <title>Payment</title>
+                <link rel="stylesheet" href="/assets/css/global.min.css" />
+                <link rel="stylesheet" href="/assets/css/detail-pay.min.css" />
+            </Head>
+            <header>
+                <div className="column-left">
+                    <Link href="/">
+                        <img
+                            style={{ cursor: "pointer" }}
+                            src="/assets/images/logo-fillfin.png"
+                            alt
+                        />
+                    </Link>
+                </div>
+                <div className="column-right">
+                    <Link href="/login">
+                        <button className="btn-login">เข้าสู่ระบบ</button>
+                    </Link>
+                    <Link href="/store/register">
+                        <button className="btn-apply">สมัครร้านค้า</button>
+                    </Link>
+                    <button className="btn">
+                        <i className="fa-solid fa-cart-shopping" />
+                    </button>
+                    <button className="btn">
+                        <i className="fa-solid fa-bars" />
+                    </button>
+                </div>
+            </header>
+            <div>
+                <div className="detail-pay">
+                    <div className="column-detail-pay">
+                        <div className="text-top">
+                            <h2>รายละเอียดการชำระค่าสมาชิก</h2>
+                        </div>
+                        <div className="column-table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>รายละเอียดแพ็กเกจ</th>
+                                        <th />
+                                    </tr>
+                                    {packageData?.map((data, index) => (
+                                        <Fragment key={index}>
+                                            <tr>
+                                                <td>{data.packageType}</td>
+                                                <td className="td-right">{data.price} BTH</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ระยะเวลาสมาชิกแพ็กเก็จ {data.packageType} ({data.packageDetail} วัน)</td>
+                                                <td />
+                                            </tr>
+                                            <tr>
+                                                <td>รวมทั้งหมด</td>
+                                                <td>{data.totalPrice} BTH</td>
+                                            </tr>
+                                        </Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="column-detail-member">
+                            <h2>ข้อมูลผู้สมัครสมาชิก</h2>
+                            {memberData?.map((data, index) => (
+                                <div key={index} className="text-column">
+                                    <div className="column-left">
+                                        <p>
+                                            ชื่อผู้ใช้<span>(User)</span>
+                                        </p>
+                                        <p>{data.username}</p>
+                                    </div>
+                                    <div className="column-right">
+                                        <p>
+                                            รหัสผ่าน<span>(Password)</span>
+                                        </p>
+                                        {toggleShowPass
+                                            ? <p >
+                                                ***********
+                                                <button>
+                                                    <i onClick={() => setSoggleShowPass(false)} className="fa-solid fa-eye" />
+                                                </button>
+                                            </p>
+                                            : <p >
+                                                {data.password}
+                                                <button>
+                                                    <i onClick={() => setSoggleShowPass(true)} className="fa-solid fa-eye" />
+                                                </button>
+                                            </p>
+                                        }
+
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="column-pay-subscription">
+                            <h2>ชำระค่าสมัครสมาชิก</h2>
+                            <div className="column-pay">
+                                <select onChange={(e) => setBank(e.target.value)} >
+                                    <option value="">กรุณาเลือกข้อมูล</option>
+                                    {bankList?.map((data, index) => (
+                                        <option key={index} value={data.id}>
+                                            {data.names}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="column-img-pay">
+                                    <div className="column-left" style={{ height: '300px', width: '250px' }}>
+                                        {image ? (
+                                            <img
+                                                src={image}
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: 'cover'
+                                                }}
+                                            />
+                                        ) : (
+                                            <i className="fa-solid fa-image" />
+                                        )}
+                                        <input style={{ display: "none" }} type="file" accept=".jpeg,.jpg,.png" ref={inputImage} onChange={(e) => inputImageOnChange(e)} />
+                                    </div>
+                                    <div className="column-right">
+                                        <h3>อัฟโหลดสลิป</h3>
+                                        <p>ขนาดอัฟโหลดไฟล์ภาพ ไม่เกิน 5 Mb</p>
+                                        <button onClick={() => inputImage.current.click()}>อัฟโหลด</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="btn-bottom">
+                            {
+                                isLoadSuccess
+                                    ? <button onClick={() => handleSendClick()} className="btn-out">ส่ง</button>
+                                    : <p>กำลังโหลดข้อมูล</p>
+                            }
+                        </div>
+                    </div>
+                    <div className="contact-us">
+                        <div className="column-contact-us">
+                            <div className="text-contact-us">
+                                <p>ติดต่อเรา</p>
+                            </div>
+                            <div className="img-contact-us">
+                                <img src="/assets/images/contact.jpg" alt />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer>
+                    <div className="footer-column">
+                        <div className="column-left">
+                            © 2022 Fillfin.com All Rights Reserved
+                        </div>
+                        <div className="column-right">
+                            <p>Terms of Service</p>
+                            <p>Privacy Policy</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </Fragment>
+    );
+}

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import Router from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 
@@ -24,8 +25,8 @@ export default function Login() {
       })
       return false;
     }
-
     let formLogin = { username, password }
+    Router.push('/member')
     // login(formLogin,pathLogin);
   }
 
@@ -39,6 +40,7 @@ export default function Login() {
         body: JSON.stringify(formLogin)
       })
       const data = onLogin.json()
+      // 
       if (data.status) {
         setCookies('access_token', data.access_token)
         setCookies('refresh_token', data.refresh_token)
@@ -76,11 +78,16 @@ export default function Login() {
       <div>
         <header>
           <div className="column-left">
-            <img src="/assets/images/logo-fillfin.png" alt />
-          </div>
+            <Link href='/'>
+              <img style={{ cursor: 'pointer' }} src="/assets/images/logo-fillfin.png" alt />
+            </Link>          </div>
           <div className="column-right">
-            <button className="btn-login">เข้าสู่ระบบ</button>
-            <button className="btn-apply">สมัครร้านค้า</button>
+            <Link href='/login'>
+              <button className="btn-login">เข้าสู่ระบบ</button>
+            </Link>
+            <Link href='/store/register'>
+              <button className="btn-apply">สมัครร้านค้า</button>
+            </Link>
             <button className="btn"><i className="fa-solid fa-cart-shopping" /></button>
             <button className="btn"><i className="fa-solid fa-bars" /></button>
           </div>

@@ -6,8 +6,6 @@ export default function Layout_main({ children }) {
   return (
     <Fragment>
       <Head>
-        <div>
-          <title>FillFin</title>
           <meta charSet="UTF-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,7 +14,6 @@ export default function Layout_main({ children }) {
           <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500&display=swap" rel="stylesheet" />
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
           <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-        </div>
       </Head>
       <main>
         {children}

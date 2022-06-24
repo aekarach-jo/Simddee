@@ -2,11 +2,10 @@ import Head from 'next/head'
 import Script from 'next/script'
 import React, { Fragment } from 'react'
 
-export default function Layout_register({ children }) {
+export default function Layout_product({ children }) {
     return (
         <Fragment>
             <Head>
-                <title>Register</title>
                 <meta charSet="UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,8 +17,8 @@ export default function Layout_register({ children }) {
             <main>
                 {children}
             </main>
-            <Script
-            ></Script>
+            <Script>
+            </Script>
         </Fragment>
     )
 }
