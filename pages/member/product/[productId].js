@@ -4,7 +4,6 @@ import React, { Fragment } from 'react'
 export default function productId() {
   const router = useRouter()
   const productId  = router.query
-    console.log(productId);
   return (
     <Fragment>
         {/* < /> */}
@@ -14,7 +13,6 @@ export default function productId() {
 
 
 export async function getServerSideProps({params}){
-console.log(params)
   return {
     props : { data : [] }
   }

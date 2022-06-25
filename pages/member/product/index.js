@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 
 export default function index({ data }) {
-    // console.log(data.store);
     // const url = useRouter()
     // const [productId, setProductId] = useState(1)
     // return (

@@ -1,10 +1,11 @@
-import Router from 'next/router'
+import  { useRouter } from 'next/router'
 import React from 'react'
 
 export default function StoreId() {
-    const idStore = Router.query
-    console.log(idStore);
+    const router = useRouter()
   return (
     <div>{idStore}</div>
   )
 }
+
+

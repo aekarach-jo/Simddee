@@ -1,15 +1,17 @@
-import Link from "next/link";
 import React, { Fragment, useRef, useState } from "react";
 import nextConfig from "../../next.config";
 import FormData from "form-data";
 import Head from "next/head";
 import Swal from "sweetalert2";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import ContactUs from "../subComponent/contactUs";
 
 const apiUrl = nextConfig.apiPath;
 
 export default function StoreRegister() {
+  const router = useRouter();
   let formData = new FormData();
+
   const [image, setImage] = useState(null);
   const inputImage = useRef(null);
 
@@ -25,7 +27,6 @@ export default function StoreRegister() {
     setImage(URLs);
   }
 
-  
   function onClickCancel() {
     Swal.fire({
       icon: "warning",
@@ -36,8 +37,8 @@ export default function StoreRegister() {
       showConfirmButton: true,
       confirmButtonText: "ยืนยัน",
     }).then(() => {
-      Router.push('/login')
-    })
+      router.push("/login");
+    });
   }
 
   function handleRegis() {
@@ -85,47 +86,10 @@ export default function StoreRegister() {
 
   return (
     <Fragment>
-      <Head>
-        <link rel="stylesheet" href="/assets/css/global.min.css" />
-        <link rel="stylesheet" href="/assets/css/apply-stone.min.css" />
-      </Head>
+      <Head></Head>
       <div>
-        <header>
-          <div className="column-left">
-            <Link href="/">
-              <img
-                style={{ cursor: "pointer" }}
-                src="/assets/images/logo-fillfin.png"
-                alt
-              />
-            </Link>
-          </div>
-          <div className="column-right">
-            <Link href="/login">
-              <button className="btn-login">เข้าสู่ระบบ</button>
-            </Link>
-            <Link href="/store/register">
-              <button className="btn-apply">สมัครร้านค้า</button>
-            </Link>
-            <button className="btn">
-              <i className="fa-solid fa-cart-shopping" />
-            </button>
-            <button className="btn">
-              <i className="fa-solid fa-bars" />
-            </button>
-          </div>
-        </header>
         <div className="apply">
-          <div className="contact-us">
-            <div className="column-contact-us">
-              <div className="text-contact-us">
-                <p>ติดต่อเรา</p>
-              </div>
-              <div className="img-contact-us">
-                <img src="/assets/images/contact.jpg" alt />
-              </div>
-            </div>
-          </div>
+          <ContactUs />
           <div className="column-apply">
             <div className="column-top-apply">
               <div className="column-left">
@@ -220,7 +184,7 @@ export default function StoreRegister() {
                           <input
                             onChange={(e) => setPassword(e.target.value)}
                             type="password"
-                            id
+                            value={password}
                             placeholder="************"
                           />
                         </div>
@@ -236,7 +200,7 @@ export default function StoreRegister() {
                           <input
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             type="password"
-                            id
+                            value={confirmPassword}
                             placeholder="************"
                           />
                         </div>
@@ -293,7 +257,7 @@ export default function StoreRegister() {
                           <input
                             onChange={(e) => setAge(e.target.value)}
                             type="password"
-                            id
+                            value={age}
                             placeholder="Lorem ipsum dolor sit amet, consectetur"
                           />
                         </div>
@@ -305,9 +269,8 @@ export default function StoreRegister() {
                                 style={{
                                   width: "100%",
                                   height: "100%",
-                                  objectFit: "cover",
+                                  objectfit: "cover",
                                 }}
-                                alt=""
                               />
                             ) : (
                               <i className="fa-solid fa-image" />
@@ -342,7 +305,7 @@ export default function StoreRegister() {
                   <p>Line ID : line 1</p>
                 </div>
                 <div className="right">
-                  <img src="/assets/images/qr.png" alt />
+                  <img src="/assets/images/qr.png" />
                 </div>
               </div>
             </div>
@@ -366,17 +329,6 @@ export default function StoreRegister() {
             </div>
           </div>
         </div>
-        <footer>
-          <div className="footer-column">
-            <div className="column-left">
-              © 2022 Fillfin.com All Rights Reserved
-            </div>
-            <div className="column-right">
-              <p>Terms of Service</p>
-              <p>Privacy Policy</p>
-            </div>
-          </div>
-        </footer>
       </div>
     </Fragment>
   );

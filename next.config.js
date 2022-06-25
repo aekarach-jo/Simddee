@@ -5,4 +5,9 @@ const nextConfig = {
   apiPath: 'http://192.168.1.51:3000/api',
 }
 
-module.exports = nextConfig
+module.exports = {
+  images: {
+    domains: ['reqres.in'],
+  },
+  nextConfig
+}
