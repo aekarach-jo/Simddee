@@ -8,7 +8,13 @@ export default function Cover({ data }) {
       <div className="banner-top">
         <div className="banner">
           <div className="column-banner"></div>
-          <img src="/assets/images/banner.png" />
+          <Image
+            src="/assets/images/banner.png"
+            width={1920}
+            height={1080}
+            layout="fill"
+            alt="iamge-cover"
+          />
           <div className="column-text">
             <div className="column">
               <h1>WOMEN</h1>
@@ -19,8 +25,4 @@ export default function Cover({ data }) {
       </div>
     </Fragment>
   );
-}
-
-{
-  /* <img src="/assets/images/banner.png"  /> */
 }

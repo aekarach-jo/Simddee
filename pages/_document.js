@@ -5,6 +5,7 @@ export default function Document() {
     <Html>
       <Head>
         {/* index หน้าหลัก */}
+        
         <link rel="stylesheet" href="/assets/css/index.min.css" />
 
         {/* หน้า Login */}
@@ -15,6 +16,12 @@ export default function Document() {
 
         {/* หน้า store register */}
         <link rel="stylesheet" href="/assets/css/apply-stone.min.css" />
+
+        {/* หน้า member */}
+        <link rel="stylesheet" href="/assets/css/product.min.css" />
+
+        {/* หน้า payment */}
+        <link rel="stylesheet" href="/assets/css/detail-pay.min.css" />
 
         {/* All using */}
         <link rel="stylesheet" href="/assets/css/global.min.css" />

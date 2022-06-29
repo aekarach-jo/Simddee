@@ -2,12 +2,7 @@
 
 const nextConfig = {
   reactStrictMode: false,
-  apiPath: 'http://192.168.1.51:3000/api',
+  apiPath: 'http://192.168.1.51:4000/api',
 }
 
-module.exports = {
-  images: {
-    domains: ['reqres.in'],
-  },
-  nextConfig
-}
+module.exports = nextConfig

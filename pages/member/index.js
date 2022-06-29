@@ -1,42 +1,42 @@
-import React, { Fragment } from 'react'
-import ShowProduct from '../../components/member/ShowProduct'
-import Layout_product from '../../components/layouts/Layout_product'
-import Cover from '../../components/subComponent/cover'
-import Nav from '../../components/subComponent/Nav'
-import ContactUs from '../../components/subComponent/ContactUs'
-import Footer from '../../components/subComponent/Footer'
+import React, { Fragment } from "react";
+import Cover from "../../components/subComponent/cover";
+import Nav from "../../components/subComponent/nav";
+import Footer from "../../components/subComponent/footer";
+import Head from "next/head";
+import nextConfig from "../../next.config";
+import ShowProduct from "../../components/member/showProduct";
 
-export default function showProduct({ products, stores , covers }) {
+export default function showProduct({ storeList, productList }) {
   return (
     <Fragment>
-      <Nav />
-      <Cover data={covers.data}/>
-      <ShowProduct product={products} store={stores} />
-      <Footer />
+      <Head>
+        <title>FillFin</title>
+      </Head>
+      <Cover />
+      <ShowProduct store={storeList} product={productList} />
     </Fragment>
-  )
+  );
 }
 
-export async function getServerSideProps() {
-  const [getProductRecommend, getAllStore, cover] = await Promise.all([
-    fetch("https://reqres.in/api/users/"),
-    fetch("https://reqres.in/api/users/"),
-    fetch("https://reqres.in/api/users/2")  // fetch cover and send to cover component
-  ])
-  const [products, stores, covers] = await Promise.all([
-    getProductRecommend.json(),
-    getAllStore.json(),
-    cover.json()
-  ])
+export async function getServerSideProps({ req, res }) {
+  const apiUrl = nextConfig.apiPath
+  const access_token = res.req.cookies.access_token
+  const gender = res.req.cookies.gender;
+  const [getAllStore] = await Promise.all([
+    fetch(`${apiUrl}/product/${gender}/allStore`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+  ]);
+  const [stores] = await Promise.all([
+    getAllStore.json()
+  ]);
   return {
-    props: { products, stores, covers }
-  }
-}
-
-showProduct.getLayout = function PageLayout(page) {
-  return (
-    <Layout_product>
-      {page}
-    </Layout_product>
-  )
+    props: {
+      storeList: stores.data.store_all,
+      productList: stores.data.product_recom
+    }
+  };
 }

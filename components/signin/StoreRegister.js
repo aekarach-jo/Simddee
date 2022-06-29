@@ -5,6 +5,7 @@ import Head from "next/head";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 import ContactUs from "../subComponent/contactUs";
+import Image from "next/image";
 
 const apiUrl = nextConfig.apiPath;
 
@@ -217,8 +218,8 @@ export default function StoreRegister() {
                         className="form-check-label"
                         htmlFor="flexCheckChecked"
                       >
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Magna felis id nulla eget. Sed donec faucibus enim in
+                        ยอมรับเงื่อนไขและข้อตกลงในการใช้บริการ 
+                        <a href="">{" "}อ่านเงื่อนไข</a>
                       </label>
                     </div>
                   </div>
@@ -255,17 +256,29 @@ export default function StoreRegister() {
                             <div className="text-left">*อายุ</div>
                           </div>
                           <input
-                            onChange={(e) => setAge(e.target.value)}
-                            type="password"
+                            type="text"
                             value={age}
                             placeholder="Lorem ipsum dolor sit amet, consectetur"
+                            onChange={(e) => {
+                              if (
+                                /^[\d]+$/.test(
+                                  e.target.value.trim() || e.target.value == ""
+                                )
+                              ) {
+                                setAge(e.target.value.trim());
+                              }
+                            }}
                           />
                         </div>
                         <div className="column-upload-img">
                           <div className="column-left">
                             {image ? (
-                              <img
+                              <Image
                                 src={image}
+                                width={100}
+                                height={100}
+                                layout="fixed"
+                                alt="image-upload"
                                 style={{
                                   width: "100%",
                                   height: "100%",
@@ -305,7 +318,7 @@ export default function StoreRegister() {
                   <p>Line ID : line 1</p>
                 </div>
                 <div className="right">
-                  <img src="/assets/images/qr.png" />
+                  <Image width={143} height={143} src="/assets/images/qr.png" alt="image-qrCode"/>
                 </div>
               </div>
             </div>

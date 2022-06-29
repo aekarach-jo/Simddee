@@ -1,16 +1,14 @@
+import Head from 'next/head';
 import { Fragment } from 'react'
 import Index from '../components/index/Index';
-import Footer from '../components/subComponent/footer';
-import Nav from '../components/subComponent/nav';
 import nextConfig from '../next.config';
 
 export default function Home({ banners, videos }) {
 
   return (
     <Fragment>
-      <Nav />
+      <Head><title>FillFin</title></Head>
       <Index banner={banners} video={videos} />
-      <Footer />
     </Fragment>
   )
 }

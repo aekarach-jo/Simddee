@@ -1,18 +1,34 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import nextConfig from "../../next.config";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import { setCookies } from "cookies-next";
+
 const apiUrl = nextConfig.apiPath;
 
-export default function MemberRegister() {
+export default function MemberRegister({ packageData }) {
+  const [packageGender, setPackageGender] = useState(packageData)
   const router = useRouter();
+  const [isRegister, setIsRegister] = useState(false); //checkbox
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("none");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [packages, setPackage] = useState(0);
-  const [isRegister, setIsRegister] = useState(false);
+  const [packages, setPackage] = useState([0,1,2]);
+  const [packageId ,setPackageId] = useState(null)
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (gender != "none") {
+      console.log(gender);
+      const found = packageGender.filter((p) => p.gender == gender)
+      console.log(found);
+      setPackage(found)
+    }
+
+  }, [gender,packageGender]);
+
 
   function handleRegis() {
     if (username == "" || password == "" || confirmPassword == "") {
@@ -32,7 +48,15 @@ export default function MemberRegister() {
       });
       return false;
     }
-    if (packages == 0) {
+    if (gender == "none") {
+      Swal.fire({
+        icon: "warning",
+        position: "center",
+        title: "กรุณาเลือกประเภทสินค้า",
+      });
+      return false;
+    }
+    if (packageId == null) {
       Swal.fire({
         icon: "warning",
         position: "center",
@@ -44,12 +68,15 @@ export default function MemberRegister() {
     const formRegis = {
       username: username,
       password: password,
-      packages: packages,
+      gender: gender,
+      package_id : packageId
     };
-    // register(formRegis);
+    console.log(formRegis);
+    register(formRegis);
   }
 
   const register = async (formRegis) => {
+    console.log(apiUrl);
     try {
       const fetchRegis = await fetch(`${apiUrl}/member/register`, {
         method: "POST",
@@ -57,31 +84,41 @@ export default function MemberRegister() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formRegis),
-      });
-      const resJson = fetchRegis.json();
-      if (resJson.status == "ok") {
-        Swal.fire({
+      })
+      console.log(fetchRegis);
+      const resJson = await fetchRegis.json();
+      console.log(resJson);
+      if (resJson.status == true) {
+        await Swal.fire({
           icon: "success",
-          title: "บันทึกเรียบร้อย",
+          title: resJson.description,
           position: "center",
           showConfirmButton: false,
           timer: 1000,
-        }).then((res) => {
-          localStorage.setItem("memberId", resJson.data.memberId); // เก็บ id ไว้ดึงข้อมูลในหน้า payment
+        }).then(() => {
+          // setCookies("member_code", resJson.data); // เก็บ user-code ไว้ดึงข้อมูลในหน้า payment
+          router.push(`/member/payment`)
         });
       } else {
-        // alert error
+        console.log(resJson);
+        await Swal.fire({
+          icon: "error",
+          title: resJson.description,
+          position: "center",
+          showConfirmButton: false,
+          timer: 1000,
+        })
       }
     } catch (err) {
+      console.log(err);
     }
-
     // router.push('/member/payment')
   };
 
   function onClickCancel() {
     Swal.fire({
       icon: "warning",
-      title: "ยกเลิกการสมัครหรือไม่",
+      title: "ยกเลิกการสมัครหรือไม่", 
       position: "center",
       showCancelButton: true,
       cancelButtonText: "ยกเลิก",
@@ -169,7 +206,7 @@ export default function MemberRegister() {
                         <input
                           onChange={(e) => setUsername(e.target.value.trim())}
                           type="text"
-                          placeholder="User Name"
+                          placeholder="Username"
                         />
                       </div>
                       <div className="form">
@@ -204,6 +241,19 @@ export default function MemberRegister() {
                           placeholder="************"
                         />
                       </div>
+                      <div className="form">
+                        <div className="label-top">
+                          <div className="text-left">
+                            ประเภทสินค้า<p>(Product type)</p>
+                          </div>
+                          <div className="text-right"></div>
+                        </div>
+                        <select onChange={(e) => setGender(e.target.value)} defaultValue={'none'} className="form-select form-select">
+                          <option disabled value={'none'}>กรุณาเลือกประเภทสินค้า</option>
+                          <option value={"men"}>ผู้ชาย</option>
+                          <option value={"women"}>ผู้หญิง</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -218,50 +268,33 @@ export default function MemberRegister() {
                     className="form-check-label"
                     htmlFor="flexCheckChecked"
                   >
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Magna felis id nulla eget. Sed donec faucibus enim in
+                    ยอมรับเงื่อนไขและข้อตกลงในการใช้บริการ
+                    <a href="">{" "}อ่านเงื่อนไข</a>
                   </label>
                 </div>
               </div>
               <div className="column-right">
                 <h2>เลือกแพ็กเก็จ</h2>
                 <div className="column">
-                  <button
-                    onClick={() => setPackage(1)}
-                    className="column-detail"
-                  >
-                    <img src="/assets/images/product.png" />
-                    <div className="text-line">
-                      <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Assumenda, eos.
-                      </p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setPackage(2)}
-                    className="column-detail"
-                  >
-                    <img src="/assets/images/product.png" />
-                    <div className="text-line">
-                      <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Assumenda, eos.
-                      </p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setPackage(3)}
-                    className="column-detail"
-                  >
-                    <img src="/assets/images/product.png" />
-                    <div className="text-line">
-                      <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Assumenda, eos.
-                      </p>
-                    </div>
-                  </button>
+                  {packages?.map((data, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setPackageId(data.package_id)}
+                      className="column-detail"
+                    >
+                      <Image
+                        width={203}
+                        height={230}
+                        latout="fill"
+                        alt="image-package"
+                        src="/assets/images/product.png" //{data.image}
+                        style={{ cursor: "pointer" }}
+                      />
+                      <div className="text-line">
+                        <p>{data.name}</p>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

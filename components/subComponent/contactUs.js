@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React, { Fragment } from 'react'
 
 export default function ContactUs() {
@@ -9,7 +10,7 @@ export default function ContactUs() {
                         <p>ติดต่อเรา</p>
                     </div>
                     <div className="img-contact-us">
-                        <img src="/assets/images/contact.jpg" />
+                        <Image width={57} height={57} src="/assets/images/contact.jpg" alt="image-contactUs" />
                     </div>
                 </div>
             </div>
